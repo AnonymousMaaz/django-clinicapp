@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Staff{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Manage Staff</h2>
+
+    {% if messages %}
+    <div class="alert alert-success" role="alert">
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Staff Management Form -->
+    <form id="staffForm" method="POST" action="{% url 'accounts:add_staff' %}" autocomplete="off">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="{{ request.POST.action }}">
+
+        <!-- Search Section -->
+        <div class="form-group">
+            <label for="search_query">Search by Email</label>
+            <input type="text" class="form-control" id="search_query" name="search_query" value="{{ request.POST.search_query }}" placeholder="Enter email" autocomplete="off">
+        </div>
+        <button type="submit" name="action" value="search" class="btn btn-primary">Search</button>
+
+        {% if staff %}
+        <!-- Display Staff Details -->
+        <div class="mt-4">
+            <h3>Staff Details</h3>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ staff.username }}" readonly autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ staff.email }}" readonly autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ staff.first_name }}" readonly autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="{{ staff.last_name }}" readonly autocomplete="off">
+            </div>
+
+            <!-- Delete Button -->
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete">
+                <input type="hidden" name="search_query" value="{{ staff.email }}">
+                <button type="submit" class="btn btn-danger" onclick="return confirmDelete()">Delete Staff</button>
+            </form>
+        </div>
+
+        {% else %}
+        <!-- Add Staff Section -->
+        <hr>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="password2">Confirm Password</label>
+            <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="first_name">First Name</label>
+            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter first name" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="last_name">Last Name</label>
+            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter last name" autocomplete="off">
+        </div>
+        <button type="submit" name="action" value="add" class="btn btn-primary" onclick="return confirmAdd()">Add Staff</button>
+        {% endif %}
+
+        <!-- Display form errors -->
+        {% for field in form %}
+            {% if field.errors %}
+            <div class="form-group">
+                <div class="alert alert-danger">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endfor %}
+        {% if form.non_field_errors %}
+        <div class="form-group">
+            <div class="alert alert-danger">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </form>
+</div>
+
+<script>
+    function confirmDelete() {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const firstName = document.getElementById('first_name').value;
+        const lastName = document.getElementById('last_name').value;
+        return confirm(`Are you sure you want to delete the staff with the following details?\n\nUsername: ${username}\nEmail: ${email}\nFirst Name: ${firstName}\nLast Name: ${lastName}`);
+    }
+
+    function confirmAdd() {
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const firstName = document.getElementById('first_name').value;
+        const lastName = document.getElementById('last_name').value;
+        const password = document.getElementById('password').value;
+        const password2 = document.getElementById('password2').value;
+        if (password !== password2) {
+            alert('Passwords do not match');
+            return false;
+        }
+        if (confirm(`Are you sure you want to add the staff with the following details?\n\nUsername: ${username}\nEmail: ${email}\nFirst Name: ${firstName}\nLast Name: ${lastName}`)) {
+            return true; // Allow the form to be submitted
+        }
+        return false; // Prevent submission if not confirmed
+    }
+</script>
+{% endblock %}
