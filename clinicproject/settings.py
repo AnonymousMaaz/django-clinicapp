@@ -32,11 +32,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SECRET_KEY =config('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [' MaazKhan.pythonanywhere.com', 'localhost', '127.0.0.1']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_ROOT = BASE_DIR / 'media'
+ALLOWED_HOSTS = []#' MaazKhan.pythonanywhere.com', 'localhost', '127.0.0.1'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+# MEDIA_ROOT = BASE_DIR / 'media'
 
 # Application definition
 
