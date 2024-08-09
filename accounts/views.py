@@ -1,8 +1,12 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import User, Group
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from .forms import StaffForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+from .models import UserProfile, MedicalRecord
+from bookings.models import Booking
+from django.http import HttpResponseForbidden
 
 def register(request):
     next_url = request.GET.get('next', 'home')
@@ -28,6 +32,10 @@ def register(request):
                     last_name=last_name
                 )
                 user.save()
+                
+                # Create UserProfile instance
+                UserProfile.objects.create(user=user)
+
                 login(request, user)
                 return redirect(next_url)
         else:
@@ -95,3 +103,37 @@ def add_staff(request):
         form = StaffForm()
 
     return render(request, 'accounts/add_staff.html', {'form': form})
+
+@login_required
+def profile_view(request, user_id=None):
+    if user_id:
+        user = get_object_or_404(User, pk=user_id)
+        if not request.user.is_superuser and user != request.user:
+            return HttpResponseForbidden("You do not have permission to view this profile.")
+    else:
+        user = request.user
+
+    profile = get_object_or_404(UserProfile, user=user)
+
+    if request.method == 'POST' and (user == request.user or request.user.is_superuser):
+        if 'profile_picture' in request.FILES:
+            profile.profile_picture = request.FILES['profile_picture']
+            profile.save()
+            messages.success(request, 'Profile picture updated successfully.')
+            return redirect('accounts:profile')
+
+    transactions = Booking.objects.filter(user=user)
+    medical_records = MedicalRecord.objects.filter(user=user)
+
+    context = {
+        'profile': profile,
+        'transactions': transactions,
+        'medical_records': medical_records
+    }
+
+    return render(request, 'accounts/profile.html', context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def all_profiles(request):
+    profiles = UserProfile.objects.all()
+    return render(request, 'accounts/all_profiles.html', {'profiles': profiles})

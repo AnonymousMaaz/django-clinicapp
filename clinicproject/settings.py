@@ -20,8 +20,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Replace with your email provider's SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')  # Replace with your email address
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')  # Replace with your email password or app password
+EMAIL_HOST_USER = 'testsprojecta@gmail.com' # Replace with your email address
+EMAIL_HOST_PASSWORD ='ifzd ajet jphv ipvc'  # Replace with your email password or app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
@@ -29,13 +29,15 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =config('DJANGO_SECRET_KEY')
+SECRET_KEY ='shreya'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [' MaazKhan.pythonanywhere.com', 'localhost', '127.0.0.1']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+ALLOWED_HOSTS = []#' MaazKhan.pythonanywhere.com', 'localhost', '127.0.0.1'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+# MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Application definition
