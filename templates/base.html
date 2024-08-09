@@ -5,9 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Project{% endblock %}</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9e7fe; 
+        }
+        .navbar {
+            background-color: #d455f7; 
+        }
+        .navbar-nav .nav-link {
+            color: #212121; 
+        }
+        .navbar-nav .nav-link:hover {
+            color: #c724f4; 
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.2); 
+            border-radius: 15px; /* Rounded corners */
+            backdrop-filter: blur(8px); /* Blur effect */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); 
+            padding: 20px; /* Inner spacing */
+        }
+        .btn-primary {
+            background-color: #d455f7; 
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #9fa8da;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="/">Clinic Booking App</a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
@@ -27,6 +55,10 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:add_staff' %}">Add Staff</a>
                         </li>
+                        <!-- Link to view all profiles yaha pe hai-->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:all_profiles' %}">View All Profiles</a>
+                        </li>
                     {% endif %}
                     {% if user.is_staff or user.is_superuser %}
                         <li class="nav-item">
@@ -34,10 +66,13 @@
                         </li>
                     {% endif %}
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a>
+                    </li>
+                    <li class="nav-item">
                         <span class="navbar-text mr-3">Hello, {{ user.username }}</span>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>  <!-- Ensure correct namespace -->
+                        <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
@@ -51,7 +86,9 @@
         </div>
     </nav>
     <div class="container mt-5">
-        {% block content %}{% endblock %}
+        <div class="glass-effect">
+            {% block content %}{% endblock %}
+        </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>

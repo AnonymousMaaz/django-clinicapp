@@ -1,0 +1,87 @@
+<!-- profile.html (under templates/accounts) -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">User Profile</h2>
+    
+    <!-- Profile Picture and Basic Info -->
+    <div class="text-center">
+        {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
+        {% else %}
+            <img src="{% static 'default_profile_picture.png' %}" alt="Default Profile Picture" class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
+        {% endif %}
+        <h3>{{ user.username }}</h3>
+        <p>Email: {{ user.email }}</p>
+        <p>First Name: {{ user.first_name }}</p>
+        <p>Last Name: {{ user.last_name }}</p>
+    </div>
+
+    <!-- Form to Upload Profile Picture -->
+    <div class="mt-4">
+        <form method="POST" enctype="multipart/form-data" action="{% url 'accounts:profile' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="profile_picture">Upload Profile Picture</label>
+                <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+    </div>
+    
+    <!-- Medical History -->
+    <h3 class="mt-5">Medical History</h3>
+    {% if profile.medical_history %}
+        <p>{{ profile.medical_history }}</p>
+    {% else %}
+        <p>No medical history available.</p>
+    {% endif %}
+    
+    <!-- Past Transactions -->
+    <h3>Visits</h3>
+    {% if transactions %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.date }}</td>
+                        <td>{{ transaction.time }}</td>
+                        <td>{{ transaction.get_status_display }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No transactions found.</p>
+    {% endif %}
+    
+    <!-- Medical Records -->
+    <h3>Medical Records</h3>
+    {% if medical_records %}
+        <ul>
+            {% for record in medical_records %}
+                <li>
+                    <p>Date: {{ record.date }}</p>
+                    <p>Problem: {{ record.problem }}</p>
+                    {% if record.document %}
+                        <a href="{{ record.document.url }}" target="_blank">View Document</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No medical records found.</p>
+    {% endif %}
+</div>
+{% endblock %}
